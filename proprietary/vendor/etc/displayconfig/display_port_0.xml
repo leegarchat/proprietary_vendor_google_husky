@@ -63,6 +63,10 @@
         </sdrHdrRatioMap>
     </highBrightnessMode>
 
+    <quirks>
+        <quirk>canSetBrightnessViaHwc</quirk>
+    </quirks>
+
     <densityMapping>
         <density>
             <height>1344</height>

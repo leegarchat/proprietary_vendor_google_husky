@@ -651,7 +651,7 @@ PRODUCT_COPY_FILES += \
     vendor/google/husky/proprietary/product/etc/permissions/com.verizon.apn.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/com.verizon.apn.xml \
     vendor/google/husky/proprietary/product/etc/permissions/com.verizon.services.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/com.verizon.services.xml \
     vendor/google/husky/proprietary/product/etc/permissions/features-verizon.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/features-verizon.xml \
-    vendor/google/husky/proprietary/product/etc/permissions/privapp-permissions-google-p-lineage.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-google-p-lineage.xml \
+    vendor/google/husky/proprietary/product/etc/permissions/privapp-permissions-google-p-evolution.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-google-p-evolution.xml \
     vendor/google/husky/proprietary/product/etc/permissions/privapp-permissions_com.google.android.apps.carrier.carrierwifi.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions_com.google.android.apps.carrier.carrierwifi.xml \
     vendor/google/husky/proprietary/product/etc/sysconfig/GoogleCamera_6gb_or_more_ram.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/GoogleCamera_6gb_or_more_ram.xml \
     vendor/google/husky/proprietary/product/etc/sysconfig/allowlist_com.android.omadm.service.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/allowlist_com.android.omadm.service.xml \
@@ -705,7 +705,7 @@ PRODUCT_COPY_FILES += \
     vendor/google/husky/proprietary/system_ext/etc/permissions/com.shannon.rcsservice.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.shannon.rcsservice.xml \
     vendor/google/husky/proprietary/system_ext/etc/permissions/google-ril.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/google-ril.xml \
     vendor/google/husky/proprietary/system_ext/etc/permissions/oemrilhook.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/oemrilhook.xml \
-    vendor/google/husky/proprietary/system_ext/etc/permissions/privapp-permissions-google-se-lineage.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-google-se-lineage.xml \
+    vendor/google/husky/proprietary/system_ext/etc/permissions/privapp-permissions-google-se-evolution.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-google-se-evolution.xml \
     vendor/google/husky/proprietary/system_ext/etc/permissions/vzw_mvs_permissions.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/vzw_mvs_permissions.xml \
     vendor/google/husky/proprietary/system_ext/etc/public.libraries-google.txt:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/public.libraries-google.txt \
     vendor/google/husky/proprietary/system_ext/etc/sysconfig/preinstalled-packages-com.verizon.mips.services.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/preinstalled-packages-com.verizon.mips.services.xml \
@@ -721,9 +721,14 @@ PRODUCT_COPY_FILES += \
     vendor/google/husky/proprietary/system_ext/priv-app/EuiccSupportPixel-P23/SUSA_RC2_23.up:$(TARGET_COPY_OUT_SYSTEM_EXT)/priv-app/EuiccSupportPixel-P23/SUSA_RC2_23.up \
     vendor/google/husky/proprietary/system_ext/priv-app/EuiccSupportPixel-P23/esim-full-v1-m40.img:$(TARGET_COPY_OUT_SYSTEM_EXT)/priv-app/EuiccSupportPixel-P23/esim-full-v1-m40.img \
     vendor/google/husky/proprietary/system_ext/priv-app/EuiccSupportPixel-P23/esim-full-v1-m41.img:$(TARGET_COPY_OUT_SYSTEM_EXT)/priv-app/EuiccSupportPixel-P23/esim-full-v1-m41.img \
-    vendor/google/husky/proprietary/system_ext/priv-app/EuiccSupportPixel-P23/esim-full-v1.img:$(TARGET_COPY_OUT_SYSTEM_EXT)/priv-app/EuiccSupportPixel-P23/esim-full-v1.img
+    vendor/google/husky/proprietary/system_ext/priv-app/EuiccSupportPixel-P23/esim-full-v1.img:$(TARGET_COPY_OUT_SYSTEM_EXT)/priv-app/EuiccSupportPixel-P23/esim-full-v1.img \
+    vendor/google/husky/proprietary/system_ext/etc/permissions/org.carconnectivity.android.digitalkey.timesync.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/org.carconnectivity.android.digitalkey.timesync.xml \
+    vendor/google/husky/proprietary/system_ext/etc/permissions/privapp-permissions-google-se-evolution.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-google-se-evolution.xml
 
 PRODUCT_PACKAGES += \
+	GoogleCamera \
+	CccDkTimeSyncService \
+	org.carconnectivity.android.digitalkey.timesync \
     libdmengine \
     libdmjavaplugin \
     com.google.edgetpu_app_service-V6-ndk \
@@ -976,7 +981,6 @@ PRODUCT_COPY_FILES += \
     vendor/google/husky/proprietary/vendor/etc/init/android.hardware.qorvo.uwb-service.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.qorvo.uwb-service.rc \
     vendor/google/husky/proprietary/vendor/etc/init/android.hardware.secure_element-service.uicc.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.secure_element-service.uicc.rc \
     vendor/google/husky/proprietary/vendor/etc/init/android.hardware.security.keymint-service.citadel.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.security.keymint-service.citadel.rc \
-    vendor/google/husky/proprietary/vendor/etc/init/android.hardware.thermal-service.pixel.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.thermal-service.pixel.rc \
     vendor/google/husky/proprietary/vendor/etc/init/android.hardware.usb-service.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.usb-service.rc \
     vendor/google/husky/proprietary/vendor/etc/init/android.hardware.usb.gadget-service.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.usb.gadget-service.rc \
     vendor/google/husky/proprietary/vendor/etc/init/android.hardware.vibrator-service.cs40l26.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.vibrator-service.cs40l26.rc \
@@ -1029,7 +1033,6 @@ PRODUCT_COPY_FILES += \
     vendor/google/husky/proprietary/vendor/etc/init/pixel-bgtasks-experiment.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/pixel-bgtasks-experiment.rc \
     vendor/google/husky/proprietary/vendor/etc/init/pixel-experiments-recovery.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/pixel-experiments-recovery.rc \
     vendor/google/husky/proprietary/vendor/etc/init/pixel-sched-proxy-exec-experiment.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/pixel-sched-proxy-exec-experiment.rc \
-    vendor/google/husky/proprietary/vendor/etc/init/pixel-thermal-symlinks.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/pixel-thermal-symlinks.rc \
     vendor/google/husky/proprietary/vendor/etc/init/pixel-zram-comp-algorithm-experiment.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/pixel-zram-comp-algorithm-experiment.rc \
     vendor/google/husky/proprietary/vendor/etc/init/pixelstats-vendor.zuma.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/pixelstats-vendor.zuma.rc \
     vendor/google/husky/proprietary/vendor/etc/init/pktrouter.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/pktrouter.rc \
@@ -2894,7 +2897,6 @@ PRODUCT_PACKAGES += \
     pixelstats_flags_c_lib \
     sensors.usf \
     libspatialaudio \
-    thermal-budget-interface-ndk \
     vendor.google.battery_mitigation-V1-ndk \
     vendor.google.battery_mitigation.service_static \
     vendor.google.bluetooth_ext-V1-ndk \
@@ -2942,7 +2944,6 @@ PRODUCT_PACKAGES += \
     android.hardware.qorvo.uwb-service.xml \
     android.hardware.security.keymint-service-v3.citadel.xml \
     android.hardware.security.sharesecret-service.citadel.xml \
-    android.hardware.thermal-service.pixel.xml \
     android.hardware.usb-service.xml \
     android.hardware.usb.gadget-service.xml \
     android.hardware.vibrator-service.cs40l26.xml \
@@ -3019,7 +3020,6 @@ PRODUCT_PACKAGES += \
     android.hardware.qorvo.uwb-service \
     android.hardware.secure_element-service.uicc \
     android.hardware.security.keymint-service.citadel \
-    android.hardware.thermal-service.pixel \
     android.hardware.usb-service \
     android.hardware.usb.gadget-service \
     android.hardware.vibrator-service.cs40l26 \
@@ -3062,7 +3062,6 @@ PRODUCT_PACKAGES += \
     shared_modem_platform \
     sscoredump \
     storage_init \
-    thermal_symlinks \
     touch_gti_ical \
     trusty_metricsd \
     twoshay \
