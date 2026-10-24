@@ -10,6 +10,58 @@ soong_namespace {
     ],
 }
 
+
+
+
+dex_import {
+    name: "org.carconnectivity.android.digitalkey.timesync",
+    owner: "google",
+    jars: [
+        "proprietary/system_ext/framework/org.carconnectivity.android.digitalkey.timesync.jar",
+    ],
+    system_ext_specific: true,
+}
+
+android_app_import {
+    name: "CccDkTimeSyncService",
+    owner: "google",
+    apk: "proprietary/system_ext/priv-app/CccDkTimeSyncService/CccDkTimeSyncService.apk",
+    certificate: "platform",
+    dex_preopt: {
+        enabled: false,
+    },
+    privileged: true,
+    system_ext_specific: true,
+}
+
+
+genrule {
+    name: "GoogleCamera_merged_apk",
+    srcs: ["proprietary/product/priv-app/GoogleCamera/GoogleCamera.apk.part_*"],
+    out: ["GoogleCamera.apk"],
+    cmd: "cat $(in) > $(out) && echo \"81d6cae44bca554e17cd5fafb3d0d5a5230fa6194c19205f27d2039150645f36  $(out)\" | sha256sum -c -",
+}
+
+android_app_import {
+    name: "GoogleCamera",
+    owner: "google",
+    apk: ":GoogleCamera_merged_apk",
+    overrides: [
+        "Aperture",
+        "Camera2",
+    ],
+    preprocessed: true,
+    presigned: true,
+    dex_preopt: {
+        enabled: false,
+    },
+    privileged: true,
+    product_specific: true,
+}
+
+
+
+
 cc_prebuilt_library_shared {
     name: "libdmengine",
     owner: "google",
@@ -186,6 +238,8 @@ cc_prebuilt_library_shared {
                 "libmediandk",
                 "libcamera2ndk",
                 "libnativewindow",
+                "libEGL",
+                "libGLESv2",
                 "vendor.google.whitechapel.audio.extension-V8-ndk",
                 "libbinder_ndk",
                 "libhidlbase",
@@ -376,7 +430,7 @@ android_app_import {
 }
 
 android_app_import {
-    name: "DeviceIntelligenceNetworkPrebuiltAstrea",
+    name: "DeviceIntelligenceNetworkPrebuiltAstreaPixel",
     owner: "google",
     apk: "proprietary/product/priv-app/DeviceIntelligenceNetworkPrebuiltAstrea/DeviceIntelligenceNetworkPrebuiltAstrea.apk",
     preprocessed: true,
@@ -388,10 +442,17 @@ android_app_import {
     product_specific: true,
 }
 
+genrule {
+    name: "DevicePersonalizationAiAiPrebuiltPixel2023_merged_apk",
+    srcs: ["proprietary/product/priv-app/DevicePersonalizationAiAiPrebuiltPixel2023/DevicePersonalizationAiAiPrebuiltPixel2023.apk.part_*"],
+    out: ["DevicePersonalizationAiAiPrebuiltPixel2023.apk"],
+    cmd: "cat $(in) > $(out) && echo \"d888a94b55c14b674e24d17a080233618da986fc5da483cdbc771b6d0390e326  $(out)\" | sha256sum -c -",
+}
+
 android_app_import {
     name: "DevicePersonalizationAiAiPrebuiltPixel2023",
     owner: "google",
-    apk: "proprietary/product/priv-app/DevicePersonalizationAiAiPrebuiltPixel2023/DevicePersonalizationAiAiPrebuiltPixel2023.apk",
+    apk: ":DevicePersonalizationAiAiPrebuiltPixel2023_merged_apk",
     preprocessed: true,
     presigned: true,
     dex_preopt: {
@@ -477,10 +538,17 @@ android_app_import {
     product_specific: true,
 }
 
+genrule {
+    name: "PixelCameraServices_merged_apk",
+    srcs: ["proprietary/product/priv-app/PixelCameraServices/PixelCameraServices.apk.part_*"],
+    out: ["PixelCameraServices.apk"],
+    cmd: "cat $(in) > $(out) && echo \"02d3d9226104fafef49b7c2a79f9f4bfc977c8a7cd62a85e58e6899c834b2e50  $(out)\" | sha256sum -c -",
+}
+
 android_app_import {
     name: "PixelCameraServices",
     owner: "google",
-    apk: "proprietary/product/priv-app/PixelCameraServices/PixelCameraServices.apk",
+    apk: ":PixelCameraServices_merged_apk",
     preprocessed: true,
     presigned: true,
     dex_preopt: {
@@ -867,6 +935,58 @@ prebuilt_etc_xml {
     recovery: true,
 }
 
+rust_prebuilt_binary {
+    name: "dump_modem",
+    owner: "google",
+    target: {
+        android_arm64: {
+            srcs: [
+                "proprietary/vendor/bin/dump/dump_modem",
+            ],
+            shared_libs: [
+                "libc",
+            ],
+            rustlibs: [
+                "libstd",
+            ],
+        },
+    },
+    compile_multilib: "64",
+    strip: {
+        none: true,
+    },
+    prefer: true,
+    relative_install_path: "dump",
+    soc_specific: true,
+}
+
+rust_prebuilt_binary {
+    name: "gpuflag",
+    owner: "google",
+    target: {
+        android_arm64: {
+            srcs: [
+                "proprietary/vendor/bin/gpuflag",
+            ],
+            shared_libs: [
+                "libc",
+            ],
+            rustlibs: [
+                "libandroid_logger",
+                "librustutils",
+                "liblog_rust",
+                "libstd",
+            ],
+        },
+    },
+    compile_multilib: "64",
+    strip: {
+        none: true,
+    },
+    prefer: true,
+    soc_specific: true,
+}
+
 cc_prebuilt_binary {
     name: "gs_watchdogd",
     owner: "google",
@@ -1175,7 +1295,7 @@ cc_prebuilt_library_shared {
                 "libnosprotos",
                 "libutils",
                 "android.hardware.oemlock-V1-ndk",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "nos_app_avb",
                 "libbinder_ndk",
                 "libc++",
@@ -1317,7 +1437,7 @@ cc_prebuilt_library_shared {
                 "libnos_citadeld_proxy",
                 "libnos_feature",
                 "libutils",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "nos_app_keymaster",
                 "android.hardware.security.keymint-V3-ndk",
                 "libkeymint_support_V3",
@@ -1351,7 +1471,7 @@ cc_prebuilt_library_shared {
                 "libnosprotos",
                 "libutils",
                 "android.hardware.weaver-V3-ndk",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "nos_app_weaver",
                 "libnos_citadeld_proxy",
                 "libnos_feature",
@@ -1389,7 +1509,7 @@ cc_prebuilt_library_shared {
                 "libutils",
                 "android.hardware.weaver-V3-ndk",
                 "libbinder_ndk",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "nos_app_weaver",
                 "libnos_citadeld_proxy",
                 "libc++",
@@ -1994,7 +2114,7 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/hw/android.hardware.vibrator-impl.cs40l26.so",
             ],
             shared_libs: [
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
                 "libbinder_ndk",
                 "libhardware",
                 "liblog",
@@ -2840,7 +2960,7 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/libExynosHWCService.so",
             ],
             shared_libs: [
-                "com.google.hardware.pixel.display-V21-ndk",
+                "com.google.hardware.pixel.display-V23-ndk",
                 "liblog",
                 "libcutils",
                 "libutils",
@@ -2917,7 +3037,6 @@ cc_prebuilt_library_shared {
                 "libcutils",
                 "libdmabufheap",
                 "libhardware",
-                "libion",
                 "liblog",
                 "libutils",
                 "libc++",
@@ -3370,38 +3489,9 @@ cc_prebuilt_library_shared {
                 "libbinder",
                 "libcutils",
                 "liblog",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "libutils",
                 "libdisplay_tflite",
-                "libc++",
-                "libc",
-                "libm",
-                "libdl",
-            ],
-        },
-    },
-    compile_multilib: "64",
-    prefer: true,
-    soc_specific: true,
-}
-
-cc_prebuilt_library_shared {
-    name: "libdisppower-pixel",
-    owner: "google",
-    strip: {
-        none: true,
-    },
-    target: {
-        android_arm64: {
-            srcs: [
-                "proprietary/vendor/lib64/libdisppower-pixel.so",
-            ],
-            shared_libs: [
-                "libbase",
-                "libcutils",
-                "liblog",
-                "libperfmgr",
-                "libutils",
                 "libc++",
                 "libc",
                 "libm",
@@ -3515,9 +3605,6 @@ cc_prebuilt_library_shared {
             ],
             shared_libs: [
                 "libdl",
-                "libnativewindow",
-                "libsync",
-                "libbinder_ndk",
                 "libm",
                 "liblog",
                 "libc",
@@ -3621,7 +3708,7 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/libexynosdisplay.so",
             ],
             shared_libs: [
-                "com.google.hardware.pixel.display-V21-ndk",
+                "com.google.hardware.pixel.display-V23-ndk",
                 "liblog",
                 "libcutils",
                 "libhardware",
@@ -4212,9 +4299,6 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/libgxp.so",
             ],
             shared_libs: [
-                "libnativewindow",
-                "libsync",
-                "libbinder_ndk",
                 "libdl",
                 "liblog",
                 "libc",
@@ -4377,7 +4461,7 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/libmodem_ml_svc_proto.so",
             ],
             shared_libs: [
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "libc++",
                 "libc",
                 "libm",
@@ -4402,7 +4486,7 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/libmodem_svc_proto_legacy_soong.so",
             ],
             shared_libs: [
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "libcutils",
                 "liblog",
                 "libbase",
@@ -4611,13 +4695,13 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/libpixelstats.so",
             ],
             shared_libs: [
-                "android.frameworks.stats-V2-ndk",
+                "android.frameworks.stats-V3-ndk",
                 "libbase",
                 "libbinder_ndk",
                 "libcutils",
                 "libhidlbase",
                 "liblog",
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
                 "libutils",
                 "libsensorndkbridge",
                 "pixelatoms-cpp",
@@ -4651,6 +4735,57 @@ cc_prebuilt_library_shared {
             shared_libs: [
                 "libaconfig_storage_read_api_cc",
                 "libbase",
+                "liblog",
+                "libc++",
+                "libc",
+                "libm",
+                "libdl",
+            ],
+        },
+    },
+    compile_multilib: "64",
+    prefer: true,
+    soc_specific: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "libprotobuf-cpp-full-6.33.5-absl20260526",
+    owner: "google",
+    strip: {
+        none: true,
+    },
+    target: {
+        android_arm64: {
+            srcs: [
+                "proprietary/vendor/lib64/libprotobuf-cpp-full-6.33.5-absl20260526.so",
+            ],
+            shared_libs: [
+                "libz",
+                "liblog",
+                "libc++",
+                "libc",
+                "libm",
+                "libdl",
+            ],
+        },
+    },
+    compile_multilib: "64",
+    prefer: true,
+    soc_specific: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "libprotobuf-cpp-lite-6.33.5-absl20260526",
+    owner: "google",
+    strip: {
+        none: true,
+    },
+    target: {
+        android_arm64: {
+            srcs: [
+                "proprietary/vendor/lib64/libprotobuf-cpp-lite-6.33.5-absl20260526.so",
+            ],
+            shared_libs: [
                 "liblog",
                 "libc++",
                 "libc",
@@ -4859,7 +4994,7 @@ cc_prebuilt_library_shared {
                 "libbase",
                 "libcutils",
                 "libsit_oem_proto",
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
                 "libc++",
                 "libc",
                 "libm",
@@ -4884,7 +5019,7 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/libsit_oem_proto.so",
             ],
             shared_libs: [
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
                 "libc++",
                 "libc",
                 "libm",
@@ -5630,7 +5765,7 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/pixelatoms-cpp.so",
             ],
             shared_libs: [
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
                 "libc++",
                 "libc",
                 "libm",
@@ -5741,31 +5876,6 @@ cc_prebuilt_library_shared {
     },
     compile_multilib: "64",
     relative_install_path: "soundfx",
-    prefer: true,
-    soc_specific: true,
-}
-
-cc_prebuilt_library_shared {
-    name: "thermal-budget-interface-ndk",
-    owner: "google",
-    strip: {
-        none: true,
-    },
-    target: {
-        android_arm64: {
-            srcs: [
-                "proprietary/vendor/lib64/thermal-budget-interface-ndk.so",
-            ],
-            shared_libs: [
-                "libbinder_ndk",
-                "libc++",
-                "libc",
-                "libm",
-                "libdl",
-            ],
-        },
-    },
-    compile_multilib: "64",
     prefer: true,
     soc_specific: true,
 }
@@ -6223,7 +6333,7 @@ cc_prebuilt_library_shared {
 }
 
 cc_prebuilt_library_shared {
-    name: "vendor.google.wireless_charger-V7-ndk",
+    name: "vendor.google.wireless_charger-V8-ndk",
     owner: "google",
     strip: {
         none: true,
@@ -6231,7 +6341,7 @@ cc_prebuilt_library_shared {
     target: {
         android_arm64: {
             srcs: [
-                "proprietary/vendor/lib64/vendor.google.wireless_charger-V7-ndk.so",
+                "proprietary/vendor/lib64/vendor.google.wireless_charger-V8-ndk.so",
             ],
             shared_libs: [
                 "libbinder_ndk",
@@ -6248,7 +6358,7 @@ cc_prebuilt_library_shared {
 }
 
 cc_prebuilt_library_shared {
-    name: "vendor.google.wireless_charger.service-V2-ndk",
+    name: "vendor.google.wireless_charger.service-V3-ndk",
     owner: "google",
     strip: {
         none: true,
@@ -6256,11 +6366,11 @@ cc_prebuilt_library_shared {
     target: {
         android_arm64: {
             srcs: [
-                "proprietary/vendor/lib64/vendor.google.wireless_charger.service-V2-ndk.so",
+                "proprietary/vendor/lib64/vendor.google.wireless_charger.service-V3-ndk.so",
             ],
             shared_libs: [
                 "libbinder_ndk",
-                "vendor.google.wireless_charger-V7-ndk",
+                "vendor.google.wireless_charger-V8-ndk",
                 "libc++",
                 "libc",
                 "libm",
@@ -6512,7 +6622,7 @@ cc_prebuilt_library_shared {
                 "proprietary/vendor/lib64/vendor_chre_metrics-cpp.so",
             ],
             shared_libs: [
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
                 "libc++",
                 "libc",
                 "libm",
@@ -6541,10 +6651,17 @@ prebuilt_apex {
     soc_specific: true,
 }
 
+genrule {
+    name: "com.google.pixel.camera.hal_merged",
+    srcs: ["proprietary/vendor/apex/com.google.pixel.camera.hal.apex.part_*"],
+    out: ["com.google.pixel.camera.hal.apex"],
+    cmd: "cat $(in) > $(out) && echo \"50994962f2d928d6d8514be3ed0c757a5b5aa8c9ef5cd1b5f10a7c9a08bf3405  $(out)\" | sha256sum -c -",
+}
+
 prebuilt_apex {
     name: "com.google.pixel.camera.hal",
     owner: "google",
-    src: "proprietary/vendor/apex/com.google.pixel.camera.hal.apex",
+    src: ":com.google.pixel.camera.hal_merged",
     filename: "com.google.pixel.camera.hal.apex",
     soc_specific: true,
 }
@@ -6697,15 +6814,6 @@ prebuilt_etc_xml {
     name: "android.hardware.security.sharesecret-service.citadel.xml",
     owner: "google",
     src: "proprietary/vendor/etc/vintf/manifest/android.hardware.security.sharesecret-service.citadel.xml",
-    filename_from_src: true,
-    sub_dir: "vintf/manifest",
-    soc_specific: true,
-}
-
-prebuilt_etc_xml {
-    name: "android.hardware.thermal-service.pixel.xml",
-    owner: "google",
-    src: "proprietary/vendor/etc/vintf/manifest/android.hardware.thermal-service.pixel.xml",
     filename_from_src: true,
     sub_dir: "vintf/manifest",
     soc_specific: true,
@@ -6992,6 +7100,7 @@ cc_prebuilt_binary {
                 "liblog",
                 "libutils",
                 "libcutils",
+                "libnl",
                 "libc++",
                 "libc",
                 "libm",
@@ -7237,31 +7346,6 @@ sh_binary {
     src: "proprietary/vendor/bin/dump/dump_gsc.sh",
     filename: "dump_gsc.sh",
     sub_dir: "dump",
-    soc_specific: true,
-}
-
-rust_prebuilt_binary {
-    name: "dump_modem",
-    owner: "google",
-    target: {
-        android_arm64: {
-            srcs: [
-                "proprietary/vendor/bin/dump/dump_modem",
-            ],
-            shared_libs: [
-                "libc",
-            ],
-            rustlibs: [
-                "libstd",
-            ],
-        },
-    },
-    compile_multilib: "64",
-    strip: {
-        none: true,
-    },
-    prefer: true,
-    relative_install_path: "dump",
     soc_specific: true,
 }
 
@@ -7575,33 +7659,6 @@ cc_prebuilt_binary {
     soc_specific: true,
 }
 
-rust_prebuilt_binary {
-    name: "gpuflag",
-    owner: "google",
-    target: {
-        android_arm64: {
-            srcs: [
-                "proprietary/vendor/bin/gpuflag",
-            ],
-            shared_libs: [
-                "libc",
-            ],
-            rustlibs: [
-                "libandroid_logger",
-                "librustutils",
-                "liblog_rust",
-                "libstd",
-            ],
-        },
-    },
-    compile_multilib: "64",
-    strip: {
-        none: true,
-    },
-    prefer: true,
-    soc_specific: true,
-}
-
 cc_prebuilt_binary {
     name: "android.hardware.audio.service-aidl.aoc",
     owner: "google",
@@ -7781,7 +7838,7 @@ cc_prebuilt_binary {
                 "libcutils",
                 "libhidlbase",
                 "libhardware_legacy",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "liblog",
                 "libutils",
                 "libusf",
@@ -7847,7 +7904,7 @@ cc_prebuilt_binary {
                 "proprietary/vendor/bin/hw/android.hardware.composer.hwc3-service.pixel",
             ],
             shared_libs: [
-                "com.google.hardware.pixel.display-V21-ndk",
+                "com.google.hardware.pixel.display-V23-ndk",
                 "android.hardware.graphics.composer3-V5-ndk",
                 "android.hardware.graphics.composer@2.1-resources",
                 "android.hardware.graphics.composer@2.2-resources",
@@ -7903,7 +7960,7 @@ cc_prebuilt_binary {
                 "libcutils",
                 "libjsoncpp",
                 "liblog",
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
                 "libutils",
                 "server_configurable_flags",
                 "pixelatoms-cpp",
@@ -8205,7 +8262,7 @@ cc_prebuilt_binary {
                 "libbinder_ndk",
                 "liblog",
                 "libnativewindow",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "libutils",
                 "android.hardware.neuralnetworks-V4-ndk",
                 "android.hardware.neuralnetworks@1.0",
@@ -8283,12 +8340,12 @@ cc_prebuilt_binary {
                 "liblog",
                 "libutils",
                 "libbinder_ndk",
-                "libdisppower-pixel",
                 "libperfmgr",
                 "libprocessgroup",
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
+                "libjsoncpp",
                 "pixel-power-ext-V2-ndk",
-                "android.frameworks.stats-V2-ndk",
+                "android.frameworks.stats-V3-ndk",
                 "android.hardware.common.fmq-V1-ndk",
                 "libfmq",
                 "libc++",
@@ -8417,7 +8474,7 @@ cc_prebuilt_binary {
                 "libcppbor",
                 "libnos",
                 "libnosprotos",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "libkeymaster_portable",
                 "liblog",
                 "libutils",
@@ -8427,43 +8484,6 @@ cc_prebuilt_binary {
                 "libnos_citadeld_proxy",
                 "nos_app_keymaster",
                 "android.hardware.security.keymint-V3-ndk",
-                "libc++",
-                "libc",
-                "libm",
-                "libdl",
-            ],
-        },
-    },
-    compile_multilib: "64",
-    strip: {
-        none: true,
-    },
-    prefer: true,
-    relative_install_path: "hw",
-    soc_specific: true,
-}
-
-cc_prebuilt_binary {
-    name: "android.hardware.thermal-service.pixel",
-    owner: "google",
-    target: {
-        android_arm64: {
-            srcs: [
-                "proprietary/vendor/bin/hw/android.hardware.thermal-service.pixel",
-            ],
-            shared_libs: [
-                "libbase",
-                "libcutils",
-                "libjsoncpp",
-                "libutils",
-                "libnl",
-                "libbinder_ndk",
-                "android.frameworks.stats-V2-ndk",
-                "android.hardware.power-V1-ndk",
-                "android.hardware.thermal-V3-ndk",
-                "thermal-budget-interface-ndk",
-                "pixel-power-ext-V2-ndk",
-                "pixelatoms-cpp",
                 "libc++",
                 "libc",
                 "libm",
@@ -8502,10 +8522,10 @@ cc_prebuilt_binary {
                 "android.hardware.usb.gadget@1.0",
                 "android.hardware.usb.gadget-V1-ndk",
                 "libcutils",
-                "android.frameworks.stats-V2-ndk",
+                "android.frameworks.stats-V3-ndk",
                 "pixelatoms-cpp",
                 "libbinder_ndk",
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
                 "server_configurable_flags",
                 "libaconfig_storage_read_api_cc",
                 "libc++",
@@ -8565,7 +8585,7 @@ cc_prebuilt_binary {
                 "proprietary/vendor/bin/hw/android.hardware.vibrator-service.cs40l26",
             ],
             shared_libs: [
-                "libprotobuf-cpp-lite",
+                "libprotobuf-cpp-lite-6.33.5-absl20260526",
                 "libbinder_ndk",
                 "libhardware",
                 "liblog",
@@ -8829,7 +8849,6 @@ cc_prebuilt_binary {
                 "libvndksupport",
                 "libbinder",
                 "libbinder_ndk",
-                "android.hardware.media.c2@1.2",
                 "libcodec2",
                 "libgc2_bw_store",
                 "libgc2_bw_log",
@@ -9246,7 +9265,7 @@ cc_prebuilt_binary {
                 "libutils",
                 "libwlcproto_aidl-default",
                 "librtxproto_aidl-default",
-                "vendor.google.wireless_charger-V7-ndk",
+                "vendor.google.wireless_charger-V8-ndk",
                 "libc++",
                 "libc",
                 "libm",
@@ -9278,8 +9297,8 @@ cc_prebuilt_binary {
                 "libcrypto",
                 "libutils-default",
                 "libcutils",
-                "vendor.google.wireless_charger-V7-ndk",
-                "vendor.google.wireless_charger.service-V2-ndk",
+                "vendor.google.wireless_charger-V8-ndk",
+                "vendor.google.wireless_charger.service-V3-ndk",
                 "android.hardware.health-V4-ndk",
                 "server_configurable_flags",
                 "libaconfig_storage_read_api_cc",
@@ -9436,7 +9455,7 @@ cc_prebuilt_binary {
                 "libmodem_ml_svc_proto",
                 "libnativewindow",
                 "libneuralnetworks",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "libutils",
                 "modem_ml_pw_rpc_gen",
                 "modemml-tflite-service-aidl-V1-ndk",
@@ -9581,7 +9600,7 @@ cc_prebuilt_binary {
                 "libcutils",
                 "libjsoncpp",
                 "libmodem_svc_proto_legacy_soong",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "libbase",
                 "liblog",
                 "libaconfig_storage_read_api_cc",
@@ -9613,7 +9632,7 @@ cc_prebuilt_binary {
                 "libcutils",
                 "libjsoncpp",
                 "libmodem_svc_proto_legacy_soong",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "libbase",
                 "liblog",
                 "libaconfig_storage_read_api_cc",
@@ -9665,14 +9684,6 @@ sh_binary {
     owner: "google",
     src: "proprietary/vendor/bin/storage_init.sh",
     filename: "storage_init.sh",
-    soc_specific: true,
-}
-
-sh_binary {
-    name: "thermal_symlinks",
-    owner: "google",
-    src: "proprietary/vendor/bin/thermal_symlinks",
-    filename: "thermal_symlinks",
     soc_specific: true,
 }
 
@@ -9757,7 +9768,7 @@ cc_prebuilt_binary {
                 "libutils",
                 "android.frameworks.stats-V2-ndk",
                 "libbinder_ndk",
-                "libprotobuf-cpp-full",
+                "libprotobuf-cpp-full-6.33.5-absl20260526",
                 "libtouchflow",
                 "server_configurable_flags",
                 "libaconfig_storage_read_api_cc",
